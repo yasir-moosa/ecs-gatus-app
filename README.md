@@ -1,4 +1,4 @@
-# Threat Composer on ECS Fargate
+# Gatus on ECS Fargate (Update Under Progress - Ignore README)
 
 Threat Composer is an open source app from AWS that helps you build out threat models, you can have a play with it yourself here: [Threat Composer Tool](https://awslabs.github.io/threat-composer/workspaces/default/dashboard). 
 
