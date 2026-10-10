@@ -23,20 +23,6 @@ jobs:
         with:
           dockerfile: Dockerfile
         continue-on-error: true
-
-      - name: Debug OIDC subject
-        run: |
-          python3 - <<'EOF'
-          import os, json, base64, urllib.request
-          req = urllib.request.Request(
-              os.environ["ACTIONS_ID_TOKEN_REQUEST_URL"] + "&audience=sts.amazonaws.com",
-              headers={"Authorization": "bearer " + os.environ["ACTIONS_ID_TOKEN_REQUEST_TOKEN"]})
-          token = json.load(urllib.request.urlopen(req))["value"]
-          payload = token.split(".")[1]
-          payload += "=" * (-len(payload) % 4)
-          print(json.loads(base64.urlsafe_b64decode(payload))["sub"])
-          EOF
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
         with:
