@@ -10,7 +10,7 @@ terraform {
 
   backend "s3" {
     bucket       = "ecs-proj-s3-bucket"
-    key          = "ecs-project/app/terraform.tfstate"
+    key          = "ecs-gatus/app/terraform.tfstate"
     region       = "eu-west-2"
     encrypt      = true
     use_lockfile = true

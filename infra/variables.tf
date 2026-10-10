@@ -11,7 +11,7 @@ variable "domain_name" {
 
 variable "subdomain" {
   type        = string
-  default     = "tm"
+  default     = "gatus"
   description = "subdomain prefix for the app"
 
 }

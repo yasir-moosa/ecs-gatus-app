@@ -21,7 +21,7 @@ jobs:
         run: |
           for i in $(seq 1 ${{ env.MAX_RETRIES }}); do
             echo "Attempt $i of ${{ env.MAX_RETRIES }}"
-            response=$(curl -s -o /dev/null -w "%{http_code}" https://tm.yasirmoosa.tech/health)
+            response=$(curl -s -o /dev/null -w "%{http_code}" https://gatus.yasirmoosa.tech/)
 
             if [ "$response" -eq 200 ]; then
               echo "Health check passed"

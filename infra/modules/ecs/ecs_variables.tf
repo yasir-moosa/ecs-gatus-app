@@ -22,7 +22,7 @@ variable "app_port" {
 variable "ecr_repo_name" {
   type        = string
   description = "ECR repository name to pull the app image from"
-  default     = "ecs-project-repo"
+  default     = "ecs-gatus-repo"
 }
 
 variable "aws_region" {

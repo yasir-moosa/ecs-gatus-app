@@ -23,6 +23,20 @@ jobs:
         with:
           dockerfile: Dockerfile
         continue-on-error: true
+
+      - name: Debug OIDC subject
+        run: |
+          python3 - <<'EOF'
+          import os, json, base64, urllib.request
+          req = urllib.request.Request(
+              os.environ["ACTIONS_ID_TOKEN_REQUEST_URL"] + "&audience=sts.amazonaws.com",
+              headers={"Authorization": "bearer " + os.environ["ACTIONS_ID_TOKEN_REQUEST_TOKEN"]})
+          token = json.load(urllib.request.urlopen(req))["value"]
+          payload = token.split(".")[1]
+          payload += "=" * (-len(payload) % 4)
+          print(json.loads(base64.urlsafe_b64decode(payload))["sub"])
+          EOF
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
         with:
@@ -36,7 +50,7 @@ jobs:
       - name: Build image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ecs-project-repo
+          ECR_REPOSITORY: ecs-gatus-repo
           IMAGE_TAG: ${{ github.sha }}
         run: docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
 
@@ -44,7 +58,7 @@ jobs:
         uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # v0.35.0
         with:
           version: v0.69.3
-          image-ref: "${{ steps.login-ecr.outputs.registry }}/ecs-project-repo:${{ github.sha }}"
+          image-ref: "${{ steps.login-ecr.outputs.registry }}/ecs-gatus-repo:${{ github.sha }}"
           format: "table"
           exit-code: "1"
           ignore-unfixed: true
@@ -54,6 +68,6 @@ jobs:
       - name: Push image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ecs-project-repo
+          ECR_REPOSITORY: ecs-gatus-repo
           IMAGE_TAG: ${{ github.sha }}
         run: docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
